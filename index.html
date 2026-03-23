@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定语从句：关系词逻辑匹配</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #5a6a7a;
+            margin-bottom: 30px;
+        }
+        .tags {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 0 5px;
+        }
+        .tag.blue {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .game-area {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .word-list {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .word-list h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-left: 8px;
+            border-left: 4px solid #6366f1;
+        }
+        .word-item {
+            padding: 12px;
+            margin: 8px 0;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .word-item:active {
+            cursor: grabbing;
+        }
+        .drop-zones {
+            flex: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .drop-zone {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px dashed #cbd5e1;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .drop-zone.drag-over {
+            border-color: #6366f1;
+            background-color: #f0f4ff;
+        }
+        .drop-zone h4 {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .drop-zone .rel-word {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .drop-zone.people .rel-word {
+            color: #2563eb;
+        }
+        .drop-zone.thing .rel-word {
+            color: #16a34a;
+        }
+        .drop-zone.time .rel-word {
+            color: #d97706;
+        }
+        .drop-zone.place .rel-word {
+            color: #9333ea;
+        }
+        .result-area {
+            grid-column: 1 / -1;
+            background-color: #1e293b;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            min-height: 180px;
+        }
+        .result-area h3 {
+            color: #94a3b8;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .result-text {
+            color: #cbd5e1;
+            font-size: 18px; /* 句子字号放大 */
+            line-height: 1.6;
+        }
+        /* 关系词高亮样式 */
+        .highlight {
+            font-weight: bold;
+            background-color: #fde047;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        /* 大尺寸提示框样式 */
+        .feedback-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px 60px;
+            border-radius: 12px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            min-width: 400px;
+        }
+        .feedback-box.success {
+            background-color: #22c55e;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+        }
+        .feedback-box.error {
+            background-color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+        .feedback-box.show {
+            opacity: 1;
+        }
+        /* 新增：二维码区域样式 */
+        .qrcode-area {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .qrcode-area h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        #qrcode {
+            display: inline-block;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+    <!-- 引入QRCode.js库（CDN） -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>定语从句：关系词逻辑匹配</h1>
+        <p class="subtitle">根据先行词 (Antecedent) 的属性，将文化名词拖拽至对应的关系词区域。</p>
+        <div class="tags">
+            <span class="tag blue">先行词决定关系词</span>
+        </div>
+
+        <div class="game-area">
+            <div class="word-list">
+                <h3>待分类词汇</h3>
+                <div class="word-item" draggable="true" data-category="thing" data-word="Dim Sum (点心)">
+                    Dim Sum (点心) <span>=</span>
+                </div>
+                <div class="word-item" draggable="true" data-category="people" data-word="Confucius (孔子)">
+                    Confucius (孔子) <span>=</span>
+                </div>
+                <div class="word-item" draggable="true" data-category="thing" data-word="Peking Opera (京剧)">
+                    Peking Opera (京剧) <span>=</span>
+                </div>
+                <div class="word-item" draggable="true" data-category="place" data-word="Ancient Silk Road (丝绸之路)">
+                    Ancient Silk Road (丝绸之路) <span>=</span>
+                </div>
+                <div class="word-item" draggable="true" data-category="time" data-word="Mid-Autumn Festival (中秋节)">
+                    Mid-Autumn Festival (中秋节) <span>=</span>
+                </div>
+                <div class="word-item" draggable="true" data-category="people" data-word="Yao Ming (姚明)">
+                    Yao Ming (姚明) <span>=</span>
+                </div>
+                <div class="word-item" draggable="true" data-category="time" data-word="Spring Festival (春节)">
+                    Spring Festival (春节) <span>=</span>
+                </div>
+                <div class="word-item" draggable="true" data-category="place" data-word="The Forbidden City (故宫)">
+                    The Forbidden City (故宫) <span>=</span>
+                </div>
+            </div>
+
+            <div class="drop-zones">
+                <div class="drop-zone people" data-category="people">
+                    <h4>指代：人</h4>
+                    <div class="rel-word">who / that</div>
+                </div>
+                <div class="drop-zone thing" data-category="thing">
+                    <h4>指代：物</h4>
+                    <div class="rel-word">which / that</div>
+                </div>
+                <div class="drop-zone time" data-category="time">
+                    <h4>指代：时间</h4>
+                    <div class="rel-word">when</div>
+                </div>
+                <div class="drop-zone place" data-category="place">
+                    <h4>指代：地点</h4>
+                    <div class="rel-word">where</div>
+                </div>
+                <div class="result-area">
+                    <h3>从句生成器 (LOGIC MATCHING)</h3>
+                    <div class="result-text">将词汇拖入上方区域以查看生成的定语从句...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 新增：二维码展示区域 -->
+        <div class="qrcode-area">
+            <h3>扫码访问本页面</h3>
+            <div id="qrcode"></div>
+        </div>
+
+        <div class="feedback-box" id="feedbackBox"></div>
+    </div>
+
+    <script>
+        // 示例句子库
+        const sentenceTemplates = {
+            people: {
+                "Confucius (孔子)": "Confucius is a great thinker who has influenced Chinese culture for thousands of years.",
+                "Yao Ming (姚明)": "Yao Ming is a famous basketball player who is well-known around the world."
+            },
+            thing: {
+                "Dim Sum (点心)": "Dim Sum is a traditional Cantonese snack which is popular in southern China.",
+                "Peking Opera (京剧)": "Peking Opera is a unique Chinese art form that combines singing and acting."
+            },
+            time: {
+                "Mid-Autumn Festival (中秋节)": "Mid-Autumn Festival is a traditional festival when families gather to eat mooncakes.",
+                "Spring Festival (春节)": "Spring Festival is the most important festival in China when people celebrate the Lunar New Year."
+            },
+            place: {
+                "Ancient Silk Road (丝绸之路)": "The Ancient Silk Road is a historic route where Eastern and Western cultures met.",
+                "The Forbidden City (故宫)": "The Forbidden City is a magnificent palace where Chinese emperors once lived."
+            }
+        };
+
+        // 拖拽事件处理
+        const wordItems = document.querySelectorAll('.word-item');
+        const dropZones = document.querySelectorAll('.drop-zone');
+        const resultText = document.querySelector('.result-text');
+        const feedbackBox = document.getElementById('feedbackBox');
+
+        let draggedItem = null;
+
+        // 显示提示框的函数
+        function showFeedback(message, isSuccess) {
+            feedbackBox.textContent = message;
+            feedbackBox.className = `feedback-box ${isSuccess ? 'success' : 'error'}`;
+            feedbackBox.classList.add('show');
+            
+            setTimeout(() => {
+                feedbackBox.classList.remove('show');
+            }, 2000);
+        }
+
+        // 高亮句子中的关系词
+        function highlightRelativeWord(sentence) {
+            const relativeWords = ['who', 'that', 'which', 'when', 'where'];
+            let highlightedSentence = sentence;
+            
+            relativeWords.forEach(word => {
+                const regex = new RegExp(`(${word})`, 'g');
+                highlightedSentence = highlightedSentence.replace(regex, '<span class="highlight">$1</span>');
+            });
+            
+            return highlightedSentence;
+        }
+
+        wordItems.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedItem = e.target;
+                e.dataTransfer.setData('text/plain', e.target.dataset.word);
+                e.target.style.opacity = '0.5';
+            });
+
+            item.addEventListener('dragend', (e) => {
+                e.target.style.opacity = '1';
+                draggedItem = null;
+            });
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+
+                const word = e.dataTransfer.getData('text/plain');
+                const itemCategory = draggedItem.dataset.category;
+                const zoneCategory = zone.dataset.category;
+
+                if (itemCategory === zoneCategory) {
+                    const sentence = sentenceTemplates[itemCategory][word];
+                    resultText.innerHTML = highlightRelativeWord(sentence);
+                    showFeedback('Excellent!', true);
+                    draggedItem.remove();
+                } else {
+                    resultText.textContent = `❌ 匹配错误：${word} 不属于 ${zone.querySelector('.rel-word').textContent} 区域，请重新拖拽！`;
+                    showFeedback('Come on！One more time！', false);
+                }
+            });
+        });
+
+        // 新增：生成二维码逻辑
+        window.onload = function() {
+            // 获取当前网页的URL
+            const currentUrl = window.location.href;
+            // 生成二维码（参数：容器ID、内容、配置）
+            QRCode.toCanvas(document.getElementById('qrcode'), currentUrl, {
+                width: 200, // 二维码尺寸
+                color: {
+                    dark: '#2c3e50', // 深色（二维码颜色）
+                    light: '#ffffff' // 浅色（背景色）
+                }
+            }, function (error) {
+                if (error) console.error('二维码生成失败：', error)
+            })
+        }
+    </script>
+</body>
+</html>
