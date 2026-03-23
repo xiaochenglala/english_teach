@@ -11,117 +11,123 @@
             box-sizing: border-box;
             font-family: "Microsoft Yahei", sans-serif;
         }
+        html, body {
+            height: 100%;
+            overflow: hidden; /* 手机端禁止整体滑动 */
+        }
         body {
             background-color: #f5f7fa;
-            padding: 15px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
         }
         .container {
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         h1 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            padding: 4px 0;
         }
         .subtitle {
             text-align: center;
             color: #5a6a7a;
-            margin-bottom: 20px;
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-size: clamp(0.75rem, 3vw, 0.9rem);
+            padding-bottom: 4px;
         }
         .tags {
             text-align: center;
-            margin-bottom: 20px;
+            padding-bottom: 6px;
         }
         .tag {
             display: inline-block;
-            padding: 5px 12px;
+            padding: 3px 8px;
             border-radius: 20px;
-            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
-            margin: 0 5px;
+            font-size: 0.7rem;
         }
         .tag.blue {
             background-color: #e3f2fd;
             color: #1976d2;
         }
+        /* 核心游戏区域：占满剩余屏幕，弹性布局 */
         .game-area {
+            flex: 1;
             display: flex;
-            gap: 20px;
-            align-items: flex-start;
             flex-direction: column;
+            gap: 8px;
+            overflow: hidden;
         }
+        /* 平板/PC布局 */
         @media (min-width: 768px) {
             .game-area {
                 flex-direction: row;
+                gap: 15px;
+            }
+            html, body {
+                overflow: auto;
             }
         }
+
+        /* 左侧词汇区 */
         .word-list {
-            flex: 1;
-            width: 100%;
             background: white;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 10px;
+            border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        @media (min-width: 768px) {
-            .word-list {
-                max-width: 350px;
-            }
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .word-list h3 {
             color: #2c3e50;
-            margin-bottom: 15px;
-            padding-left: 8px;
-            border-left: 4px solid #6366f1;
-            font-size: clamp(1rem, 2vw, 1.2rem);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            padding-left: 6px;
+            border-left: 3px solid #6366f1;
+            margin-bottom: 6px;
         }
         .word-item {
-            padding: 10px 12px;
-            margin: 8px 0;
+            padding: 8px 10px;
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             cursor: grab;
-            display: flex;
+            display: none;
             justify-content: space-between;
             align-items: center;
-            font-size: clamp(0.9rem, 1.8vw, 1rem);
-            /* 默认隐藏所有词汇 */
-            display: none;
+            font-size: clamp(0.85rem, 3.5vw, 1rem);
         }
-        /* 仅显示当前待做的词汇 */
         .word-item.active {
             display: flex;
         }
-        .word-item:active {
-            cursor: grabbing;
+        .complete-tip {
+            text-align: center;
+            color: #22c55e;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            font-weight: 500;
         }
+
+        /* 右侧主区域：分类 + 从句生成器 */
         .drop-zones {
-            flex: 2;
-            width: 100%;
+            flex: 1;
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
+            grid-template-rows: 1fr 1fr auto;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
         }
-        @media (min-width: 768px) {
-            .drop-zones {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        @media (min-width: 1024px) {
-            .drop-zones {
-                max-width: 800px;
-            }
-        }
+        /* 4个分类框：2×2 布局 */
         .drop-zone {
             background: white;
-            padding: 15px 20px;
-            border-radius: 12px;
+            padding: 8px;
+            border-radius: 10px;
             border: 2px dashed #cbd5e1;
-            min-height: 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -134,66 +140,65 @@
         }
         .drop-zone h4 {
             color: #64748b;
-            font-size: clamp(0.8rem, 1.6vw, 0.9rem);
-            margin-bottom: 8px;
+            font-size: clamp(0.7rem, 3vw, 0.85rem);
+            margin-bottom: 4px;
         }
         .drop-zone .rel-word {
-            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            font-size: clamp(0.95rem, 4vw, 1.3rem);
             font-weight: bold;
         }
-        .drop-zone.people .rel-word {
-            color: #2563eb;
-        }
-        .drop-zone.thing .rel-word {
-            color: #16a34a;
-        }
-        .drop-zone.time .rel-word {
-            color: #d97706;
-        }
-        .drop-zone.place .rel-word {
-            color: #9333ea;
-        }
+        .drop-zone.people .rel-word { color: #2563eb; }
+        .drop-zone.thing .rel-word { color: #16a34a; }
+        .drop-zone.time .rel-word { color: #d9706; }
+        .drop-zone.place .rel-word { color: #9333ea; }
+
+        /* 从句生成器：固定在底部，一屏可见 */
         .result-area {
             grid-column: 1 / -1;
             background-color: #1e293b;
             color: white;
-            padding: 20px;
-            border-radius: 12px;
-            min-height: 150px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .result-area h3 {
             color: #94a3b8;
-            font-size: clamp(0.9rem, 1.8vw, 1rem);
-            margin-bottom: 15px;
+            font-size: clamp(0.75rem, 3vw, 0.9rem);
+            margin-bottom: 4px;
         }
         .result-text {
             color: #cbd5e1;
-            font-size: clamp(1rem, 2vw, 1.1rem);
-            line-height: 1.6;
+            font-size: clamp(0.8rem, 3.2vw, 1rem);
+            line-height: 1.4;
         }
         .highlight {
             font-weight: bold;
             background-color: #fde047;
             color: #0f172a;
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 1px 4px;
+            border-radius: 3px;
         }
+
+        /* 提示框 */
         .feedback-box {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px 40px;
-            border-radius: 12px;
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: clamp(1.1rem, 5vw, 1.6rem);
             font-weight: bold;
             color: white;
             z-index: 9999;
             opacity: 0;
             transition: opacity 0.3s ease;
             text-align: center;
-            min-width: 80%;
-            max-width: 400px;
+            min-width: 70%;
+            max-width: 320px;
         }
         .feedback-box.success {
             background-color: #22c55e;
@@ -206,20 +211,12 @@
         .feedback-box.show {
             opacity: 1;
         }
-        /* 全部完成提示样式 */
-        .complete-tip {
-            text-align: center;
-            color: #22c55e;
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            font-weight: 500;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>定语从句：关系词逻辑匹配</h1>
-        <p class="subtitle">根据先行词 (Antecedent) 的属性，将文化名词拖拽至对应的关系词区域。</p>
+        <p class="subtitle">根据先行词属性，拖拽词汇到对应关系词区域</p>
         <div class="tags">
             <span class="tag blue">先行词决定关系词 | 逐题作答</span>
         </div>
@@ -230,29 +227,14 @@
                 <div class="word-item active" draggable="true" data-category="thing" data-word="Dim Sum (点心)">
                     Dim Sum (点心) <span>=</span>
                 </div>
-                <div class="word-item" draggable="true" data-category="people" data-word="Confucius (孔子)">
-                    Confucius (孔子) <span>=</span>
-                </div>
-                <div class="word-item" draggable="true" data-category="thing" data-word="Peking Opera (京剧)">
-                    Peking Opera (京剧) <span>=</span>
-                </div>
-                <div class="word-item" draggable="true" data-category="place" data-word="Ancient Silk Road (丝绸之路)">
-                    Ancient Silk Road (丝绸之路) <span>=</span>
-                </div>
-                <div class="word-item" draggable="true" data-category="time" data-word="Mid-Autumn Festival (中秋节)">
-                    Mid-Autumn Festival (中秋节) <span>=</span>
-                </div>
-                <div class="word-item" draggable="true" data-category="people" data-word="Yao Ming (姚明)">
-                    Yao Ming (姚明) <span>=</span>
-                </div>
-                <div class="word-item" draggable="true" data-category="time" data-word="Spring Festival (春节)">
-                    Spring Festival (春节) <span>=</span>
-                </div>
-                <div class="word-item" draggable="true" data-category="place" data-word="The Forbidden City (故宫)">
-                    The Forbidden City (故宫) <span>=</span>
-                </div>
-                <!-- 全部完成提示 -->
-                <div class="complete-tip" id="completeTip" style="display: none;">🎉 所有词汇匹配完成！</div>
+                <div class="word-item" draggable="true" data-category="people" data-word="Confucius (孔子)">Confucius (孔子)</div>
+                <div class="word-item" draggable="true" data-category="thing" data-word="Peking Opera (京剧)">Peking Opera (京剧)</div>
+                <div class="word-item" draggable="true" data-category="place" data-word="Ancient Silk Road (丝绸之路)">丝绸之路</div>
+                <div class="word-item" draggable="true" data-category="time" data-word="Mid-Autumn Festival (中秋节)">中秋节</div>
+                <div class="word-item" draggable="true" data-category="people" data-word="Yao Ming (姚明)">Yao Ming (姚明)</div>
+                <div class="word-item" draggable="true" data-category="time" data-word="Spring Festival (春节)">春节</div>
+                <div class="word-item" draggable="true" data-category="place" data-word="The Forbidden City (故宫)">故宫</div>
+                <div class="complete-tip" id="completeTip" style="display: none;">🎉 全部完成！</div>
             </div>
 
             <div class="drop-zones">
@@ -273,17 +255,16 @@
                     <div class="rel-word">where</div>
                 </div>
                 <div class="result-area">
-                    <h3>从句生成器 (LOGIC MATCHING)</h3>
-                    <div class="result-text">将词汇拖入上方区域以查看生成的定语从句...</div>
+                    <h3>从句生成器</h3>
+                    <div class="result-text">将词汇拖入上方区域查看句子</div>
                 </div>
             </div>
         </div>
-
-        <div class="feedback-box" id="feedbackBox"></div>
     </div>
 
+    <div class="feedback-box" id="feedbackBox"></div>
+
     <script>
-        // 示例句子库
         const sentenceTemplates = {
             people: {
                 "Confucius (孔子)": "Confucius is a great thinker who has influenced Chinese culture for thousands of years.",
@@ -294,16 +275,15 @@
                 "Peking Opera (京剧)": "Peking Opera is a unique Chinese art form that combines singing and acting."
             },
             time: {
-                "Mid-Autumn Festival (中秋节)": "Mid-Autumn Festival is a traditional festival when families gather to eat mooncakes.",
-                "Spring Festival (春节)": "Spring Festival is the most important festival in China when people celebrate the Lunar New Year."
+                "Mid-Autumn Festival (中秋节)": "Mid-Autumn Festival is a festival when families eat mooncakes.",
+                "Spring Festival (春节)": "Spring Festival is the most important festival when people celebrate the new year."
             },
             place: {
-                "Ancient Silk Road (丝绸之路)": "The Ancient Silk Road is a historic route where Eastern and Western cultures met.",
-                "The Forbidden City (故宫)": "The Forbidden City is a magnificent palace where Chinese emperors once lived."
+                "Ancient Silk Road (丝绸之路)": "The Ancient Silk Road is a route where Eastern and Western cultures met.",
+                "The Forbidden City (故宫)": "The Forbidden City is a palace where Chinese emperors once lived."
             }
         };
 
-        // 核心元素获取
         const wordItems = document.querySelectorAll('.word-item');
         const dropZones = document.querySelectorAll('.drop-zone');
         const resultText = document.querySelector('.result-text');
@@ -311,94 +291,66 @@
         const completeTip = document.getElementById('completeTip');
         let draggedItem = null;
 
-        // 显示提示框的函数
         function showFeedback(message, isSuccess) {
             feedbackBox.textContent = message;
             feedbackBox.className = `feedback-box ${isSuccess ? 'success' : 'error'}`;
             feedbackBox.classList.add('show');
-            setTimeout(() => {
-                feedbackBox.classList.remove('show');
-            }, 2000);
+            setTimeout(() => feedbackBox.classList.remove('show'), 1800);
         }
 
-        // 高亮句子中的关系词
         function highlightRelativeWord(sentence) {
-            const relativeWords = ['who', 'that', 'which', 'when', 'where'];
-            let highlightedSentence = sentence;
-            relativeWords.forEach(word => {
-                const regex = new RegExp(`(${word})`, 'g');
-                highlightedSentence = highlightedSentence.replace(regex, '<span class="highlight">$1</span>');
-            });
-            return highlightedSentence;
+            const words = ['who','that','which','when','where'];
+            let res = sentence;
+            words.forEach(w => res = res.replace(new RegExp(`(${w})`,'g'),'<span class="highlight">$1</span>'));
+            return res;
         }
 
-        // 加载下一个词汇的函数
         function loadNextWord() {
-            // 获取当前激活的词汇
-            const currentActive = document.querySelector('.word-item.active');
-            if (currentActive) {
-                currentActive.classList.remove('active'); // 移除当前激活状态
-            }
-            // 获取下一个未激活的词汇
-            const nextWord = currentActive?.nextElementSibling;
-            if (nextWord && nextWord.classList.contains('word-item')) {
-                nextWord.classList.add('active'); // 激活下一个词汇
-            } else {
-                // 无下一个词汇，显示完成提示
+            const curr = document.querySelector('.word-item.active');
+            if(!curr) return;
+            curr.classList.remove('active');
+            const next = curr.nextElementSibling;
+            if(next && next.classList.contains('word-item')) next.classList.add('active');
+            else {
                 completeTip.style.display = 'block';
-                resultText.innerHTML = '<span style="color:#22c55e;">✅ 所有定语从句匹配任务完成，恭喜你！</span>';
+                resultText.innerHTML = '<span style="color:#22c55e;">✅ 全部匹配完成！</span>';
             }
         }
 
-        // 拖拽开始事件
         wordItems.forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                // 仅允许激活的词汇被拖拽
-                if (e.target.classList.contains('active')) {
+            item.addEventListener('dragstart', e => {
+                if(e.target.classList.contains('active')) {
                     draggedItem = e.target;
-                    e.dataTransfer.setData('text/plain', e.target.dataset.word);
+                    e.dataTransfer.setData('text', e.target.dataset.word);
                     e.target.style.opacity = '0.5';
-                } else {
-                    e.preventDefault(); // 阻止未激活词汇的拖拽
-                }
+                } else e.preventDefault();
             });
-            // 拖拽结束事件
-            item.addEventListener('dragend', (e) => {
-                if (draggedItem) {
-                    e.target.style.opacity = '1';
-                    draggedItem = null;
-                }
+            item.addEventListener('dragend', e => {
+                if(draggedItem) e.target.style.opacity = '1';
+                draggedItem = null;
             });
         });
 
-        // 拖拽区域事件
         dropZones.forEach(zone => {
-            zone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                zone.classList.add('drag-over');
-            });
-            zone.addEventListener('dragleave', () => {
-                zone.classList.remove('drag-over');
-            });
-            zone.addEventListener('drop', (e) => {
+            zone.addEventListener('dragover', e => {e.preventDefault(); zone.classList.add('drag-over');});
+            zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+            zone.addEventListener('drop', e => {
                 e.preventDefault();
                 zone.classList.remove('drag-over');
-                if (!draggedItem) return; // 无拖拽元素则直接返回
+                if(!draggedItem) return;
 
-                const word = e.dataTransfer.getData('text/plain');
-                const itemCategory = draggedItem.dataset.category;
-                const zoneCategory = zone.dataset.category;
+                const word = e.dataTransfer.getData('text');
+                const cat1 = draggedItem.dataset.category;
+                const cat2 = zone.dataset.category;
 
-                if (itemCategory === zoneCategory) {
-                    // 匹配正确：生成从句+提示+加载下一个
-                    const sentence = sentenceTemplates[itemCategory][word];
-                    resultText.innerHTML = highlightRelativeWord(sentence);
+                if(cat1 === cat2) {
+                    const s = sentenceTemplates[cat1][word];
+                    resultText.innerHTML = highlightRelativeWord(s);
                     showFeedback('Excellent!', true);
-                    loadNextWord(); // 核心：加载下一个词汇
+                    loadNextWord();
                 } else {
-                    // 匹配错误：仅提示，不加载下一个
-                    resultText.textContent = `❌ 匹配错误：${word} 不属于 ${zone.querySelector('.rel-word').textContent} 区域，请重新拖拽！`;
-                    showFeedback('Come on！One more time！', false);
+                    resultText.textContent = '❌ 错误，请重试';
+                    showFeedback('再试一次！', false);
                 }
             });
         });
